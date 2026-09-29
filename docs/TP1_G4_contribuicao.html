@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>TP1 G4 - Tabela de Contribui&ccedil;&atilde;o Individual</title>
+<style>
+  body { font-family: "Times New Roman", serif; font-size: 11pt; margin: 2cm; }
+  h1 { font-size: 15pt; text-align: center; }
+  h2 { font-size: 12pt; margin-top: 18px; }
+  table { border-collapse: collapse; width: 100%; margin-top: 6px; }
+  th, td { border: 1px solid #000; padding: 4px 6px; vertical-align: top; }
+  th { background: #eee; }
+  td.c { text-align: center; }
+  .sig { height: 38px; }
+  @media print { body { margin: 1.5cm; } }
+</style>
+</head>
+<body>
+<h1>Anexo A &mdash; Tabela de Contribui&ccedil;&atilde;o Individual</h1>
+<p style="text-align:center"><i>Abra no navegador e use Imprimir &rarr; Salvar como PDF (TP1_G4_contribuicao.pdf). Revise as atividades e os percentuais antes de assinar.</i></p>
+
+<h2>Identifica&ccedil;&atilde;o</h2>
+<table>
+<tr><th style="width:28%">Campo</th><th>Preenchimento</th></tr>
+<tr><td>Disciplina</td><td>T&oacute;picos Especiais em Sistemas de Informa&ccedil;&atilde;o</td></tr>
+<tr><td>Grupo</td><td>G4</td></tr>
+<tr><td>Desafio RSNA</td><td>2021 &mdash; COVID-19 AI Detection (SIIM-FISABIO-RSNA)</td></tr>
+<tr><td>T&iacute;tulo do artigo</td><td>Um Baseline Cl&aacute;ssico para Classifica&ccedil;&atilde;o de Radiografias de T&oacute;rax no Desafio SIIM-FISABIO-RSNA COVID-19</td></tr>
+<tr><td>Link do reposit&oacute;rio</td><td>https://github.com/SEU_USUARIO/tp1-g4-covid19-baseline</td></tr>
+<tr><td>Data de entrega</td><td>04/10/2026</td></tr>
+</table>
+
+<h2>A.1. Contribui&ccedil;&atilde;o por integrante</h2>
+<table>
+<tr><th style="width:20%">Nome completo</th><th style="width:11%">Matr&iacute;cula</th><th>Atividades desenvolvidas (concretas)</th><th style="width:10%">Contribui&ccedil;&atilde;o (%)</th></tr>
+<tr><td>Felipe Freires da Costa</td><td></td><td>Cadastro e acesso aos dados no Kaggle; cria&ccedil;&atilde;o do reposit&oacute;rio e do notebook de reprodu&ccedil;&atilde;o; execu&ccedil;&atilde;o da leitura DICOM, da amostragem e da parti&ccedil;&atilde;o por paciente (<code>prepare_data.py</code>); an&aacute;lise explorat&oacute;ria (<code>eda.py</code>, Fig. EDA); fichamento das refer&ecirc;ncias; reda&ccedil;&atilde;o da Introdu&ccedil;&atilde;o, dos Trabalhos Relacionados, da Metodologia e da Conclus&atilde;o; formata&ccedil;&atilde;o no template SBC; teste de reprodutibilidade em ambiente limpo.</td><td class="c">34</td></tr>
+<tr><td>Eduardo Nobre Nogueira de Oliveira</td><td></td><td>Pipeline de pr&eacute;-processamento (CLAHE e m&aacute;scara pulmonar cl&aacute;ssica, <code>preprocessing.py</code>) e controle de qualidade das m&aacute;scaras (<code>fig_masks.png</code>); extra&ccedil;&atilde;o das cinco fam&iacute;lias de descritores (<code>features.py</code>, <code>extract_features.py</code>); extra&ccedil;&otilde;es e an&aacute;lise da abla&ccedil;&atilde;o de pr&eacute;-processamento; revis&atilde;o das se&ccedil;&otilde;es de pr&eacute;-processamento e descritores.</td><td class="c">33</td></tr>
+<tr><td>Pedro Paulo Alves dos Santos Nunes</td><td></td><td>Treinamento e ajuste dos modelos com CV aninhada agrupada (<code>experiment.py</code>, <code>run_experiments.py</code>); Tabelas de resultados; abla&ccedil;&atilde;o de desbalanceamento (<code>ablation.py</code>); figuras ROC, matriz de confus&atilde;o e import&acirc;ncia (<code>make_figures.py</code>); an&aacute;lise de erro por classe e por fabricante; reda&ccedil;&atilde;o dos Resultados.</td><td class="c">33</td></tr>
+<tr><td colspan="3" style="text-align:right"><b>Total</b></td><td class="c"><b>100%</b></td></tr>
+</table>
+
+<h2>A.2. Matriz de responsabilidade por atividade</h2>
+<p>R = respons&aacute;vel principal; A = apoio; &mdash; = n&atilde;o participou.</p>
+<table>
+<tr><th>Atividade</th><th>Felipe</th><th>Eduardo</th><th>Pedro</th></tr>
+<tr><td>Acesso aos dados, cadastro e amostragem</td><td class="c">R</td><td class="c">A</td><td class="c">A</td></tr>
+<tr><td>An&aacute;lise explorat&oacute;ria (EDA)</td><td class="c">R</td><td class="c">A</td><td class="c">&mdash;</td></tr>
+<tr><td>Revis&atilde;o de literatura e fichamento</td><td class="c">R</td><td class="c">A</td><td class="c">A</td></tr>
+<tr><td>Pipeline de pr&eacute;-processamento</td><td class="c">A</td><td class="c">R</td><td class="c">&mdash;</td></tr>
+<tr><td>Extra&ccedil;&atilde;o de caracter&iacute;sticas</td><td class="c">&mdash;</td><td class="c">R</td><td class="c">A</td></tr>
+<tr><td>Treinamento e ajuste dos modelos</td><td class="c">&mdash;</td><td class="c">A</td><td class="c">R</td></tr>
+<tr><td>Protocolo de valida&ccedil;&atilde;o e m&eacute;tricas</td><td class="c">A</td><td class="c">A</td><td class="c">R</td></tr>
+<tr><td>Experimentos comparativos e abla&ccedil;&otilde;es</td><td class="c">&mdash;</td><td class="c">A</td><td class="c">R</td></tr>
+<tr><td>An&aacute;lise de erro</td><td class="c">A</td><td class="c">A</td><td class="c">R</td></tr>
+<tr><td>Gera&ccedil;&atilde;o de tabelas e figuras</td><td class="c">A</td><td class="c">A</td><td class="c">R</td></tr>
+<tr><td>Reda&ccedil;&atilde;o &mdash; Introdu&ccedil;&atilde;o e Trabalhos Relacionados</td><td class="c">R</td><td class="c">A</td><td class="c">A</td></tr>
+<tr><td>Reda&ccedil;&atilde;o &mdash; Metodologia</td><td class="c">R</td><td class="c">A</td><td class="c">A</td></tr>
+<tr><td>Reda&ccedil;&atilde;o &mdash; Resultados e Conclus&atilde;o</td><td class="c">A</td><td class="c">&mdash;</td><td class="c">R</td></tr>
+<tr><td>Formata&ccedil;&atilde;o no template SBC</td><td class="c">R</td><td class="c">&mdash;</td><td class="c">A</td></tr>
+<tr><td>Organiza&ccedil;&atilde;o do reposit&oacute;rio e teste de reprodutibilidade</td><td class="c">R</td><td class="c">A</td><td class="c">A</td></tr>
+</table>
+
+<h2>A.3. Observa&ccedil;&otilde;es do grupo (opcional)</h2>
+<p style="border:1px solid #000; min-height:50px; padding:6px">Todo o pipeline foi executado em um notebook compartilhado no Kaggle, e cada integrante executou e validou a pr&oacute;pria etapa. Um assistente de IA foi usado como apoio na estrutura&ccedil;&atilde;o do c&oacute;digo e do texto, conforme a nota no artigo.</p>
+
+<h2>A.4. Declara&ccedil;&atilde;o e assinaturas</h2>
+<p>Declaramos que as informa&ccedil;&otilde;es acima refletem com fidelidade a divis&atilde;o de trabalho realizada, que todos os integrantes compreendem o conte&uacute;do integral do artigo entregue e que o c&oacute;digo disponibilizado no reposit&oacute;rio &eacute; de autoria do grupo, com as devidas cita&ccedil;&otilde;es de bibliotecas e trabalhos de terceiros.</p>
+<table>
+<tr><th style="width:40%">Nome</th><th>Assinatura</th><th style="width:18%">Data</th></tr>
+<tr class="sig"><td>Felipe Freires da Costa</td><td></td><td></td></tr>
+<tr class="sig"><td>Eduardo Nobre Nogueira de Oliveira</td><td></td><td></td></tr>
+<tr class="sig"><td>Pedro Paulo Alves dos Santos Nunes</td><td></td><td></td></tr>
+</table>
+</body>
+</html>

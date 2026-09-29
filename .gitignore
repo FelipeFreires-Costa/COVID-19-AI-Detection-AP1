@@ -1,0 +1,15 @@
+work/
+data/
+.venv/
+*.dcm
+*.pkl
+*.joblib
+__pycache__/
+.ipynb_checkpoints/
+paper/*.aux
+paper/*.log
+paper/*.bbl
+paper/*.blg
+paper/*.out
+paper/*.synctex.gz
+results*/TP1_G4_paper_overleaf.zip

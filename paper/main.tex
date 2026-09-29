@@ -1,0 +1,162 @@
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+\usepackage{graphicx,url}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath}
+
+% Todos os numeros do texto vem de numbers.tex, gerado por src/fill_paper.py.
+\input{numbers}
+
+\sloppy
+
+\title{Baseline Cl\'assico para Radiografias de T\'orax\\no Desafio SIIM-FISABIO-RSNA COVID-19}
+
+\author{Felipe Freires da Costa\inst{1}, Eduardo Nobre Nogueira de Oliveira\inst{1},\\
+Pedro Paulo Alves dos Santos Nunes\inst{1}}
+
+\address{Curso de Sistemas de Informa\c{c}\~ao -- NOME DA INSTITUI\c{C}\~AO\\
+CIDADE -- UF -- Brasil
+\email{\{felipe,eduardo,pedro\}@DOMINIO.edu.br}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We build a non-deep-learning baseline for four-class study-level classification of
+chest radiographs in the 2021 SIIM-FISABIO-RSNA COVID-19 challenge. Five hand-crafted
+descriptor families are extracted from a classical lung mask and compared with four
+classifiers under patient-grouped nested cross-validation. On a frozen patient-level
+hold-out, the selected model reaches a macro AUC-ROC of \TestAUC{} (trivial baseline:
+0.500); most errors are indeterminate and atypical studies predicted as typical.
+\end{abstract}
+
+\begin{resumo}
+Constru\'{\i}mos um baseline sem aprendizado profundo para a classifica\c{c}\~ao, por estudo,
+de radiografias de t\'orax em quatro classes no desafio SIIM-FISABIO-RSNA COVID-19 (2021).
+Cinco fam\'{\i}lias de descritores manuais s\~ao extra\'{\i}das de uma m\'ascara pulmonar cl\'assica e
+comparadas com quatro classificadores em valida\c{c}\~ao cruzada aninhada agrupada por
+paciente. No teste congelado, o modelo selecionado atinge AUC-ROC macro de \TestAUC{}
+(baseline trivial: 0,500); a maior parte dos erros s\~ao estudos indeterminados e
+at\'{\i}picos preditos como t\'{\i}picos.
+\end{resumo}
+
+\section{Introdu\c{c}\~ao}
+
+Na COVID-19, a radiografia de t\'orax (RX) mostra opacidades inespec\'{\i}ficas, tipicamente
+bilaterais, perif\'ericas e basais \cite{wong2020frequency}, e o laudo padronizado as
+classifica como apar\^encia t\'{\i}pica, indeterminada, at\'{\i}pica ou negativa para pneumonia
+\cite{litmanovich2020review}. O desafio SIIM-FISABIO-RSNA de 2021 adotou essas categorias
+em um conjunto multic\^entrico anotado por radiologistas \cite{lakhani2023siim}.
+Formulamos a tarefa como classifica\c{c}\~ao em quatro classes \emph{por estudo}. Como modelos
+profundos em RX tendem a aprender atalhos \cite{degrave2021shortcuts}, \'e preciso um piso
+interpret\'avel e medido com rigor. Contribu\'{\i}mos com:
+\begin{itemize}
+\item um pipeline reprodut\'{\i}vel de leitura DICOM, m\'ascara pulmonar cl\'assica e cinco
+fam\'{\i}lias de descritores, incluindo descritores por zona pulmonar;
+\item uma grade descritor $\times$ classificador em CV aninhada agrupada por paciente,
+com baseline trivial, teste congelado e abla\c{c}\~oes;
+\item uma an\'alise de erro por classe, por fabricante e por falha da m\'ascara.
+\end{itemize}
+
+\section{Trabalhos Relacionados}
+
+M\'ascaras pulmonares combinadas com histogramas, bordas, LBP e HOG em SVM j\'a detectavam
+achados difusos na triagem de tuberculose \cite{jaeger2014tb}, e descritores de textura
+foram aplicados \`a COVID-19 em RX port\'ateis \cite{hussain2020texture}. Muitos desses
+estudos, por\'em, usaram fontes distintas por classe e parti\c{c}\~ao por imagem, o que
+superestima o desempenho \cite{roberts2021pitfalls} e favorece atalhos
+\cite{degrave2021shortcuts}. Nosso trabalho usa um conjunto de rotulagem padronizada, em
+que as classes n\~ao correspondem a fontes diferentes \cite{lakhani2023siim}, resolve a
+tarefa mais dif\'{\i}cil de quatro apar\^encias e particiona por paciente com CV aninhada
+\cite{varma2006bias}.
+
+\section{Metodologia}
+
+C\'odigo, parti\c{c}\~ao congelada e instru\c{c}\~oes:
+\url{https://github.com/SEU_USUARIO/tp1-g4-covid19-baseline} (semente 42).
+
+\textbf{Dados.} Usamos todo o treino do desafio (\NStudies{} estudos, \NImages{} imagens e
+\NPatients{} pacientes), pois os r\'otulos do teste oficial n\~ao s\~ao p\'ublicos. As classes
+se distribuem em T\'{\i}pico \PctTyp{}, Negativo \PctNeg{}, Indeterminado \PctInd{} e At\'{\i}pico
+\PctAty{}. Com \texttt{StratifiedGroupKFold} por \texttt{PatientID}, separamos dev
+(\NDev{} estudos, 5 dobras) e teste (\NTest{} estudos), sem paciente em comum.
+
+\textbf{Pr\'e-processamento.} Aplicamos \emph{Modality LUT} (\emph{RescaleSlope/Intercept})
+e \emph{VOI LUT}, invertemos imagens MONOCHROME1, normalizamos pelos percentis 0,5--99,5 e
+redimensionamos para $512\times512$. O CLAHE \cite{zuiderveld1994clahe} real\c{c}a opacidades
+sutis. A m\'ascara pulmonar usa limiar de Otsu, abertura morfol\'ogica, os dois maiores
+componentes internos e fecho convexo; quando falha, usamos uma ROI fixa (\MaskFallback{}
+das imagens). A m\'ascara \'e dividida em seis zonas (lado $\times$ ter\c{c}o vertical).
+
+\textbf{Descritores}, dentro da m\'ascara: (1) \emph{intensidade zonal}: momentos,
+percentis e histograma, mais estat\'{\i}sticas por zona, assimetria lateral e gradiente
+inferior-superior, que codificam a distribui\c{c}\~ao t\'{\i}pica \cite{wong2020frequency};
+(2) \emph{GLCM/Haralick} \cite{haralick1973} com 7 propriedades, 3 dist\^ancias e 4 \^angulos,
+para a heterogeneidade do vidro fosco; (3) \emph{LBP} uniforme invariante \`a rota\c{c}\~ao em
+3 escalas \cite{ojala2002lbp}, pela invari\^ancia a mudan\c{c}as monot\^onicas de brilho entre
+equipamentos; (4) \emph{Gabor} com 4 escalas e 4 orienta\c{c}\~oes \cite{jain1991gabor}; e
+(5) \emph{HOG} \cite{dalal2005hog} no recorte pulmonar. Estudos com v\'arias imagens usam a
+m\'edia das caracter\'{\i}sticas.
+
+\textbf{Modelos e protocolo.} Comparamos o baseline trivial (probabilidades a priori) com
+regress\~ao log\'{\i}stica, SVM-RBF, Random Forest e LightGBM, com pesos de classe balanceados.
+Imputa\c{c}\~ao, padroniza\c{c}\~ao e PCA ficam no \emph{pipeline}, ajustados s\'o no treino de cada
+dobra. Os hiperpar\^ametros s\~ao escolhidos em 3 dobras internas agrupadas dentro de cada
+uma das 5 externas \cite{varma2006bias}. A melhor configura\c{c}\~ao no dev \'e reajustada e
+avaliada uma \'unica vez no teste. As m\'etricas s\~ao AUC-ROC e AUC-PR macro, acur\'acia
+balanceada, sensibilidade por classe e a AUC bin\'aria pneumonia vs.\ negativo.
+
+\section{Resultados e Discuss\~ao}
+
+\input{tables/table_main.tex}
+
+A melhor fam\'{\i}lia isolada foi \BestFamily{} (AUC \BestFamilyAUC{}), e a concatena\c{c}\~ao de
+todas chegou a \AllBestAUC{} (Tabela~\ref{tab:main}); em m\'edia, \BestModelAvg{} foi o melhor
+classificador. A configura\c{c}\~ao selecionada, \BestConfig{}, teve AUC \DevAUC{} na CV e, no
+teste, AUC \TestAUC{}, AUC-PR \TestAP{} (trivial: \TestAPDummy{}), acur\'acia balanceada
+\TestBalAcc{} (trivial: 0,250) e AUC bin\'aria \TestBinAUC{}.
+
+\begin{figure}[ht]
+\centering
+\IfFileExists{figures/fig_roc_cm.png}
+  {\includegraphics[width=0.72\textwidth]{figures/fig_roc_cm.png}}
+  {\fbox{\parbox{0.8\textwidth}{\centering\vspace{1.5cm}Figura pendente: rodar src/fill\_paper.py\vspace{1.5cm}}}}
+\caption{ROC por classe e matriz de confus\~ao normalizada no teste.}
+\label{fig:roccm}
+\end{figure}
+
+\textbf{Abla\c{c}\~oes.} A AUC foi \AblRawAUC{} sem CLAHE e sem m\'ascara e \AblDefaultAUC{}
+no pipeline completo: a m\'ascara contribuiu com \AblMaskDelta{} e o CLAHE com
+\AblClaheDelta{}. Com regress\~ao log\'{\i}stica, a sensibilidade da classe At\'{\i}pica foi
+\SensAtyNone{} sem tratamento, \SensAtyBal{} com pesos de classe e \SensAtySmote{} com
+SMOTE \cite{chawla2002smote}, enquanto a AUC pouco variou (\AUCImbNone{}, \AUCImbBal{},
+\AUCImbSmote{}), pois o tratamento desloca sobretudo o limiar de decis\~ao.
+
+\textbf{An\'alise de erro.} No teste, \IndToTyp{} dos Indeterminados e \AtyToTyp{} dos
+At\'{\i}picos foram preditos como T\'{\i}picos (Figura~\ref{fig:roccm}). As categorias diferem
+mais pela \emph{distribui\c{c}\~ao} das opacidades do que pela textura
+\cite{litmanovich2020review}, o que descritores agregados capturam s\'o em parte. A acur\'acia foi \AccMaskOk{} com m\'ascara v\'alida e \AccMaskFb{} no fallback, e
+variou de \AccManufMin{} a \AccManufMax{} entre fabricantes, sinal da variabilidade entre
+institui\c{c}\~oes. Na permuta\c{c}\~ao, \TopFamily{} foi a fam\'{\i}lia mais informativa.
+
+\section{Conclus\~ao}
+
+Sem aprendizado profundo, o piso do projeto \'e AUC-ROC macro de \TestAUC{} e acur\'acia
+balanceada de \TestBalAcc{}. H\'a sinal para detectar pneumonia, mas pouco para separar as
+apar\^encias at\'{\i}pica e indeterminada, de defini\c{c}\~ao espacial. As limita\c{c}\~oes s\~ao a
+m\'ascara heur\'{\i}stica, a agrega\c{c}\~ao por m\'edia e a falta de harmoniza\c{c}\~ao entre
+equipamentos. Os pr\'oximos passos s\~ao descritores regionais guiados pelas caixas de
+opacidade e a compara\c{c}\~ao com redes profundas na mesma parti\c{c}\~ao.
+
+\noindent\footnotesize\textbf{Uso de IA generativa:} um assistente de IA (Cursor) apoiou a
+estrutura\c{c}\~ao do c\'odigo e a revis\~ao do texto; c\'odigo e refer\^encias foram verificados
+pelo grupo.\normalsize
+
+\bibliographystyle{sbc}
+\bibliography{refs}
+
+\end{document}
