@@ -1,0 +1,62 @@
+Estudos: 6054
+Imagens: 6334
+Pacientes: 3261
+Estudos com >1 imagem: 232
+Estudos por paciente (max): 25
+Pacientes com >1 estudo: 1200
+
+Classes (estudos):
+classe
+Típico           2855
+Negativo         1676
+Indeterminado    1049
+Atípico           474
+
+Classes (%):
+classe
+Típico           47.2
+Negativo         27.7
+Indeterminado    17.3
+Atípico           7.8
+
+Particao x classe:
+split           dev  test
+classe                   
+Atípico         382    92
+Indeterminado   848   201
+Negativo       1322   354
+Típico         2228   627
+
+Modalidade:
+Modality
+DX    3242
+CR    3092
+
+PhotometricInterpretation:
+PhotometricInterpretation
+MONOCHROME2    4633
+MONOCHROME1    1701
+
+BitsStored:
+BitsStored
+12.0    4311
+15.0    1240
+8.0      401
+14.0     210
+16.0     166
+10.0       3
+13.0       3
+
+Fabricantes (top 10):
+Manufacturer
+NaN    6334
+
+PixelSpacing (mm) mediana: 0.139 | faltante: 0.0%
+Resolucao original mediana: 2544 x 3028
+
+Caixas de opacidade por imagem (media por classe):
+classe
+Atípico          1.11
+Indeterminado    1.30
+Negativo         0.00
+Típico           1.96

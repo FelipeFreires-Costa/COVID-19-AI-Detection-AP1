@@ -51,9 +51,13 @@ def _read(name):
 def collect():
     m = {}
     st = C.read_splits()
-    meta = C.read_meta()
+    if (C.WORK_DIR / "image_meta.csv").exists():
+        n_images = len(C.read_meta())
+    else:
+        eda = (C.TAB_DIR / "eda_summary.txt").read_text(encoding="utf-8", errors="replace")
+        n_images = int(next(l for l in eda.splitlines() if l.startswith("Imagens:")).split(":")[1])
     m["NStudies"] = f"{len(st):,}".replace(",", ".")
-    m["NImages"] = f"{len(meta):,}".replace(",", ".")
+    m["NImages"] = f"{n_images:,}".replace(",", ".")
     m["NPatients"] = f"{st['patient_id'].nunique():,}".replace(",", ".")
     m["NDev"] = f"{int((st['split'] == 'dev').sum()):,}".replace(",", ".")
     m["NTest"] = f"{int((st['split'] == 'test').sum()):,}".replace(",", ".")

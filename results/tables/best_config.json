@@ -1,0 +1,8 @@
+{
+  "featureset": "all",
+  "model": "svm_rbf",
+  "n_features": 1922,
+  "best_params": "{'clf__C': 1.0}",
+  "cv_auc_macro": 0.7098823673706602,
+  "test_auc_macro": 0.7293824508391533
+}

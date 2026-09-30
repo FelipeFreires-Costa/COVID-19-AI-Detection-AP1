@@ -7,7 +7,8 @@ Entrega: **04/10/2026 (domingo), 23h59**, pelo AVA, em um &uacute;nico `TP1_G4_C
 - **Execu&ccedil;&atilde;o completa no Kaggle feita** (notebook executado em `notebooks/TP1_G4_kaggle_executado.ipynb`). Melhor configura&ccedil;&atilde;o: `all + svm_rbf`, AUC macro 0,710 &plusmn; 0,014 na valida&ccedil;&atilde;o cruzada e 0,729 no teste.
 - `paper/numbers.tex`, a tabela principal e as figuras j&aacute; est&atilde;o com os **resultados reais**. A an&aacute;lise de erro passou a usar a modalidade (CR/DX), porque o DICOM anonimizado n&atilde;o traz o fabricante.
 - DOIs do `refs.bib` conferidos no Crossref.
-- Falta: baixar `tp1_results.zip` do Kaggle e commitar `results/` e `splits/` (passo 6), preencher institui&ccedil;&atilde;o, cidade e dom&iacute;nio do e-mail no Overleaf, commits do Eduardo e do Pedro, assinaturas e zip final.
+- `results/` (tabelas, predi&ccedil;&otilde;es, ambiente do Kaggle) e `splits/splits.csv` commitados (passo 6 feito).
+- Falta: preencher institui&ccedil;&atilde;o, cidade e dom&iacute;nio do e-mail, compilar no Overleaf, commits do Eduardo e do Pedro, assinaturas e zip final.
 
 ## Passo a passo m&iacute;nimo (quem executa: Felipe, ~1 h de trabalho ativo)
 

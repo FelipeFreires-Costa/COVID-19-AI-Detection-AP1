@@ -1,0 +1,2 @@
+tag,clahe,mask,n_images,n_studies,mask_fallback_rate,mask_frac_mean,seconds
+clahe_full,1,0,6334,6054,0.0,1.0,1193.8895900249481
