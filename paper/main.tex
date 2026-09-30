@@ -30,7 +30,7 @@ We build a non-deep-learning baseline for four-class study-level classification 
 chest radiographs in the 2021 SIIM-FISABIO-RSNA COVID-19 challenge. Five hand-crafted
 descriptor families are extracted from a classical lung mask and compared with four
 classifiers under patient-grouped nested cross-validation. On a frozen patient-level
-hold-out, the selected model reaches a macro AUC-ROC of \TestAUC{} (trivial baseline:
+hold-out, the selected model reaches a macro AUC-ROC of \TestAUCEn{} (trivial baseline:
 0.500); most errors are indeterminate and atypical studies predicted as typical.
 \end{abstract}
 
@@ -59,7 +59,7 @@ interpret\'avel e medido com rigor. Contribu\'{\i}mos com:
 fam\'{\i}lias de descritores, incluindo descritores por zona pulmonar;
 \item uma grade descritor $\times$ classificador em CV aninhada agrupada por paciente,
 com baseline trivial, teste congelado e abla\c{c}\~oes;
-\item uma an\'alise de erro por classe, por fabricante e por falha da m\'ascara.
+\item uma an\'alise de erro por classe, por modalidade (CR/DX) e por falha da m\'ascara.
 \end{itemize}
 
 \section{Trabalhos Relacionados}
@@ -139,9 +139,13 @@ SMOTE \cite{chawla2002smote}, enquanto a AUC pouco variou (\AUCImbNone{}, \AUCIm
 \textbf{An\'alise de erro.} No teste, \IndToTyp{} dos Indeterminados e \AtyToTyp{} dos
 At\'{\i}picos foram preditos como T\'{\i}picos (Figura~\ref{fig:roccm}). As categorias diferem
 mais pela \emph{distribui\c{c}\~ao} das opacidades do que pela textura
-\cite{litmanovich2020review}, o que descritores agregados capturam s\'o em parte. A acur\'acia foi \AccMaskOk{} com m\'ascara v\'alida e \AccMaskFb{} no fallback, e
-variou de \AccManufMin{} a \AccManufMax{} entre fabricantes, sinal da variabilidade entre
-institui\c{c}\~oes. Na permuta\c{c}\~ao, \TopFamily{} foi a fam\'{\i}lia mais informativa.
+\cite{litmanovich2020review}, o que descritores agregados capturam s\'o em parte. A acur\'acia
+maior no fallback (\AccMaskFb{} contra \AccMaskOk{}) \'e enganosa: \PrevPneuMaskFb{} desses
+estudos t\^em pneumonia (contra \PrevPneuMaskOk{} com m\'ascara v\'alida), pois opacidades densas
+quebram o limiar de Otsu, o que favorece a classe majorit\'aria T\'{\i}pico. O DICOM
+anonimizado n\~ao traz o fabricante; entre modalidades, a acur\'acia foi \AccModCR{} em CR e
+\AccModDX{} em DX (AUC bin\'aria \BinAUCModCR{} e \BinAUCModDX{}), sinal da variabilidade
+entre equipamentos. Na permuta\c{c}\~ao, \TopFamily{} foi a fam\'{\i}lia mais informativa.
 
 \section{Conclus\~ao}
 

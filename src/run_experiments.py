@@ -26,7 +26,7 @@ def write_main_table(summary, featuresets, models):
         "\\begin{table}[ht]", "\\centering",
         "\\caption{AUC-ROC macro (um-contra-todos) na valida\u00e7\u00e3o cruzada aninhada "
         "(5 dobras externas agrupadas por paciente), m\u00e9dia $\\pm$ desvio-padr\u00e3o.}",
-        "\\label{tab:main}", "\\small",
+        "\\label{tab:main}", "\\footnotesize", "\\setlength{\\tabcolsep}{4pt}",
         "\\begin{tabular}{l" + "c" * len(models) + "}", "\\hline",
         "Descritor & " + " & ".join(C.MODEL_NAMES[m] for m in models) + " \\\\", "\\hline",
     ]

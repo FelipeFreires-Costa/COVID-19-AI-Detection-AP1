@@ -85,6 +85,7 @@ def collect():
     test = _read("test_metrics.csv").set_index("config")
     tb = test.iloc[0]
     m["TestAUC"] = num(tb["auc_macro"])
+    m["TestAUCEn"] = f"{tb['auc_macro']:.3f}"
     m["TestAP"] = num(tb["ap_macro"])
     m["TestBalAcc"] = num(tb["bal_acc"])
     m["TestFone"] = num(tb["f1_macro"])
@@ -119,12 +120,12 @@ def collect():
         fb.index = fb["valor"].map(lambda v: str(int(float(v))))
         m["AccMaskOk"] = num(fb.loc["0", "acuracia"]) if "0" in fb.index else "--"
         m["AccMaskFb"] = num(fb.loc["1", "acuracia"]) if "1" in fb.index else "--"
-        man = grp[(grp["variavel"] == "manufacturer") & (grp["n"] >= 20)]
-        if len(man) == 0:
-            man = grp[grp["variavel"] == "manufacturer"]
-        m["NManuf"] = str(len(man))
-        m["AccManufMin"] = num(man["acuracia"].min())
-        m["AccManufMax"] = num(man["acuracia"].max())
+        m["PrevPneuMaskOk"] = pct(fb.loc["0", "prev_pneumonia"]) if "0" in fb.index else "--"
+        m["PrevPneuMaskFb"] = pct(fb.loc["1", "prev_pneumonia"]) if "1" in fb.index else "--"
+        mod = grp[grp["variavel"] == "modality"].set_index("valor")
+        for key in ("CR", "DX"):
+            m[f"AccMod{key}"] = num(mod.loc[key, "acuracia"]) if key in mod.index else "--"
+            m[f"BinAUCMod{key}"] = num(mod.loc[key, "auc_binaria"]) if key in mod.index else "--"
 
     fam = _read("importance_family.csv")
     if fam is not None and fam["familia"].nunique() > 1:
