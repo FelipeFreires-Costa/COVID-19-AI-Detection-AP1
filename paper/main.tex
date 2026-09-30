@@ -53,14 +53,11 @@ classifica como apar\^encia t\'{\i}pica, indeterminada, at\'{\i}pica ou negativa
 em um conjunto multic\^entrico anotado por radiologistas \cite{lakhani2023siim}.
 Formulamos a tarefa como classifica\c{c}\~ao em quatro classes \emph{por estudo}. Como modelos
 profundos em RX tendem a aprender atalhos \cite{degrave2021shortcuts}, \'e preciso um piso
-interpret\'avel e medido com rigor. Contribu\'{\i}mos com:
-\begin{itemize}
-\item um pipeline reprodut\'{\i}vel de leitura DICOM, m\'ascara pulmonar cl\'assica e cinco
-fam\'{\i}lias de descritores, incluindo descritores por zona pulmonar;
-\item uma grade descritor $\times$ classificador em CV aninhada agrupada por paciente,
-com baseline trivial, teste congelado e abla\c{c}\~oes;
-\item uma an\'alise de erro por classe, por modalidade (CR/DX) e por falha da m\'ascara.
-\end{itemize}
+interpret\'avel e medido com rigor. Contribu\'{\i}mos com (i) um pipeline reprodut\'{\i}vel de
+leitura DICOM, m\'ascara pulmonar cl\'assica e cinco fam\'{\i}lias de descritores, incluindo
+descritores por zona pulmonar; (ii) uma grade descritor $\times$ classificador em CV aninhada
+agrupada por paciente, com baseline trivial, teste congelado e abla\c{c}\~oes; e (iii) uma
+an\'alise de erro por classe, por modalidade (CR/DX) e por falha da m\'ascara.
 
 \section{Trabalhos Relacionados}
 
@@ -68,8 +65,7 @@ M\'ascaras pulmonares combinadas com histogramas, bordas, LBP e HOG em SVM j\'a 
 achados difusos na triagem de tuberculose \cite{jaeger2014tb}, e descritores de textura
 foram aplicados \`a COVID-19 em RX port\'ateis \cite{hussain2020texture}. Muitos desses
 estudos, por\'em, usaram fontes distintas por classe e parti\c{c}\~ao por imagem, o que
-superestima o desempenho \cite{roberts2021pitfalls} e favorece atalhos
-\cite{degrave2021shortcuts}. Nosso trabalho usa um conjunto de rotulagem padronizada, em
+superestima o desempenho \cite{roberts2021pitfalls}. Nosso trabalho usa um conjunto de rotulagem padronizada, em
 que as classes n\~ao correspondem a fontes diferentes \cite{lakhani2023siim}, resolve a
 tarefa mais dif\'{\i}cil de quatro apar\^encias e particiona por paciente com CV aninhada
 \cite{varma2006bias}.
@@ -123,7 +119,7 @@ teste, AUC \TestAUC{}, AUC-PR \TestAP{} (trivial: \TestAPDummy{}), acur\'acia ba
 \begin{figure}[ht]
 \centering
 \IfFileExists{figures/fig_roc_cm.png}
-  {\includegraphics[width=0.72\textwidth]{figures/fig_roc_cm.png}}
+  {\includegraphics[width=0.62\textwidth]{figures/fig_roc_cm.png}}
   {\fbox{\parbox{0.8\textwidth}{\centering\vspace{1.5cm}Figura pendente: rodar src/fill\_paper.py\vspace{1.5cm}}}}
 \caption{ROC por classe e matriz de confus\~ao normalizada no teste.}
 \label{fig:roccm}
@@ -144,8 +140,7 @@ maior no fallback (\AccMaskFb{} contra \AccMaskOk{}) \'e enganosa: \PrevPneuMask
 estudos t\^em pneumonia (contra \PrevPneuMaskOk{} com m\'ascara v\'alida), pois opacidades densas
 quebram o limiar de Otsu, o que favorece a classe majorit\'aria T\'{\i}pico. O DICOM
 anonimizado n\~ao traz o fabricante; entre modalidades, a acur\'acia foi \AccModCR{} em CR e
-\AccModDX{} em DX (AUC bin\'aria \BinAUCModCR{} e \BinAUCModDX{}), sinal da variabilidade
-entre equipamentos. Na permuta\c{c}\~ao, \TopFamily{} foi a fam\'{\i}lia mais informativa.
+\AccModDX{} em DX, sinal da variabilidade entre equipamentos. Na permuta\c{c}\~ao, \TopFamily{} foi a fam\'{\i}lia mais informativa.
 
 \section{Conclus\~ao}
 
