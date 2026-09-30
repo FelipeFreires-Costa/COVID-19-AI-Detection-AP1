@@ -161,7 +161,8 @@ def main():
     for t in ("table_main.tex", "table_test.tex", "table_ablation_prep.tex", "table_ablation_imb.tex"):
         if (C.TAB_DIR / t).exists():
             shutil.copy(C.TAB_DIR / t, paper / "tables" / t)
-    for f in ("fig_roc_cm.png", "fig_importance.png", "fig_errors.png"):
+    for f in ("fig_roc_cm.png", "fig_importance.png", "fig_errors.png", "fig_masks.png",
+              "eda_overview.png", "eda_examples.png"):
         if (C.FIG_DIR / f).exists():
             shutil.copy(C.FIG_DIR / f, paper / "figures" / f)
 

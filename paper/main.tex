@@ -5,9 +5,15 @@
 \usepackage[utf8]{inputenc}
 \usepackage[brazil]{babel}
 \usepackage{amsmath}
+\usepackage{placeins}
 
 % Todos os numeros do texto vem de numbers.tex, gerado por src/fill_paper.py.
 \input{numbers}
+
+% Apendice com todas as tabelas e figuras, depois das referencias.
+% Para entregar so as 4 paginas, troque \apendicetrue por \apendicefalse.
+\newif\ifapendice
+\apendicetrue
 
 \sloppy
 
@@ -114,7 +120,8 @@ A melhor fam\'{\i}lia isolada foi \BestFamily{} (AUC \BestFamilyAUC{}), e a conc
 todas chegou a \AllBestAUC{} (Tabela~\ref{tab:main}); em m\'edia, \BestModelAvg{} foi o melhor
 classificador. A configura\c{c}\~ao selecionada, \BestConfig{}, teve AUC \DevAUC{} na CV e, no
 teste, AUC \TestAUC{}, AUC-PR \TestAP{} (trivial: \TestAPDummy{}), acur\'acia balanceada
-\TestBalAcc{} (trivial: 0,250) e AUC bin\'aria \TestBinAUC{}.
+\TestBalAcc{} (trivial: 0,250) e AUC bin\'aria \TestBinAUC{}. Todas as tabelas e figuras
+est\~ao no Ap\^endice~A.
 
 \begin{figure}[ht]
 \centering
@@ -157,5 +164,214 @@ pelo grupo.\normalsize
 
 \bibliographystyle{sbc}
 \bibliography{refs}
+
+\ifapendice
+\clearpage
+\appendix
+\renewcommand{\thetable}{A.\arabic{table}}
+\renewcommand{\thefigure}{A.\arabic{figure}}
+\setcounter{table}{0}
+\setcounter{figure}{0}
+\let\oldsubsection\subsection
+\renewcommand{\subsection}{\FloatBarrier\oldsubsection}
+
+\section{Ap\^endice: Resultados Complementares}
+
+Este ap\^endice re\'une todas as tabelas e figuras geradas pelo pipeline na execu\c{c}\~ao
+completa no Kaggle (\NStudies{} estudos, semente 42). Todos os arquivos s\~ao reproduzidos por
+\texttt{src/run\_experiments.py}, \texttt{src/ablation.py}, \texttt{src/eda.py} e
+\texttt{src/make\_figures.py}, e os valores brutos est\~ao em \texttt{results/tables/}.
+
+\subsection{Dados e an\'alise explorat\'oria}
+
+A Tabela~\ref{tab:eda} resume o conjunto. O desbalanceamento \'e forte: a classe T\'{\i}pica
+tem seis vezes mais estudos que a At\'{\i}pica. Cerca de 37\% dos pacientes t\^em mais de um
+estudo, o que justifica a parti\c{c}\~ao por \texttt{PatientID}: uma parti\c{c}\~ao por estudo ou
+por imagem colocaria o mesmo paciente no treino e no teste. Quase metade das imagens vem de
+radiografia computadorizada (CR) e 27\% est\~ao em MONOCHROME1 (preto e branco invertidos), o
+que exige a normaliza\c{c}\~ao descrita na Se\c{c}\~ao~3. O campo de fabricante foi removido na
+anonimiza\c{c}\~ao, por isso a an\'alise por equipamento usa a modalidade. A Figura~\ref{fig:eda}
+mostra a distribui\c{c}\~ao das classes e o n\'umero de caixas de opacidade anotadas por imagem:
+estudos T\'{\i}picos t\^em em m\'edia 1,96 caixas, contra 1,30 nos Indeterminados e 1,11 nos
+At\'{\i}picos, coerente com o padr\~ao bilateral e multifocal da apar\^encia t\'{\i}pica
+\cite{litmanovich2020review}. A Figura~\ref{fig:examples} traz exemplos de cada classe;
+visualmente, Indeterminado e At\'{\i}pico s\~ao dif\'{\i}ceis de distinguir de T\'{\i}pico.
+
+\begin{table}[ht]
+\centering
+\caption{Caracteriza\c{c}\~ao do conjunto de treino oficial.}
+\label{tab:eda}
+\small
+\begin{tabular}{lr|lr}
+\hline
+Item & Valor & Item & Valor \\
+\hline
+Estudos & 6.054 & T\'{\i}pico (dev / teste) & 2.228 / 627 \\
+Imagens & 6.334 & Negativo (dev / teste) & 1.322 / 354 \\
+Pacientes & 3.261 & Indeterminado (dev / teste) & 848 / 201 \\
+Estudos com $>$1 imagem & 232 & At\'{\i}pico (dev / teste) & 382 / 92 \\
+Pacientes com $>$1 estudo & 1.200 & Total (dev / teste) & 4.780 / 1.274 \\
+Modalidade CR / DX & 3.092 / 3.242 & MONOCHROME1 / 2 & 1.701 / 4.633 \\
+Resolu\c{c}\~ao mediana & $2544\times3028$ & \emph{PixelSpacing} mediano & 0,139 mm \\
+Bits armazenados (moda) & 12 & Leituras DICOM com falha & 0 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{figures/eda_overview.png}
+\caption{Estudos por classe, distribui\c{c}\~ao das classes (fabricante anonimizado) e caixas
+de opacidade por imagem.}
+\label{fig:eda}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/eda_examples.png}
+\caption{Exemplos de radiografias de cada classe ap\'os leitura DICOM e normaliza\c{c}\~ao.}
+\label{fig:examples}
+\end{figure}
+
+\subsection{Pr\'e-processamento e m\'ascara pulmonar}
+
+A Figura~\ref{fig:masks} mostra o contorno da m\'ascara pulmonar cl\'assica sobre imagens do
+conjunto. Na maior parte dos casos, os dois campos pulmonares s\~ao segmentados de forma
+plaus\'{\i}vel; em \MaskFallback{} das imagens a heur\'{\i}stica falhou e foi usada a ROI fixa
+(quadro vermelho). As falhas se concentram em imagens com opacidades densas e extensas, que
+deixam o pulm\~ao t\~ao claro quanto o mediastino e quebram o limiar de Otsu.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_masks.png}
+\caption{M\'ascara pulmonar (verde) e ROI de fallback (vermelho) em imagens do conjunto.}
+\label{fig:masks}
+\end{figure}
+
+\subsection{Desempenho no teste congelado}
+
+A Tabela~\ref{tab:test} compara a configura\c{c}\~ao selecionada na CV do dev com o
+desempenho no hold-out: as m\'etricas de teste ficaram dentro de cerca de dois desvios da CV,
+sem sinal de sobreajuste na sele\c{c}\~ao. A Tabela~\ref{tab:perclass} detalha as m\'etricas por
+classe. O modelo separa bem Negativo de T\'{\i}pico (AUC 0,861 e 0,812), mas as classes
+Indeterminado e At\'{\i}pico t\^em AUC de 0,597 e 0,647 e sensibilidade quase nula no limiar
+padr\~ao: a probabilidade dessas classes raramente \'e a maior, e quase todos esses estudos
+recebem o r\'otulo T\'{\i}pico. Na tarefa bin\'aria pneumonia vs.\ negativo, a sensibilidade foi
+0,914 com especificidade de 0,576.
+
+\input{tables/table_test.tex}
+
+\begin{table}[ht]
+\centering
+\caption{M\'etricas por classe no teste (Todas + SVM-RBF, um-contra-todos).}
+\label{tab:perclass}
+\small
+\begin{tabular}{lcccc}
+\hline
+Classe & Sensibilidade & Especificidade & AUC-ROC & AUC-PR \\
+\hline
+Negativo & 0,743 & 0,816 & 0,861 & 0,701 \\
+T\'{\i}pico & 0,872 & 0,569 & 0,812 & 0,798 \\
+Indeterminado & 0,020 & 0,990 & 0,597 & 0,213 \\
+At\'{\i}pico & 0,011 & 1,000 & 0,647 & 0,138 \\
+\hline
+Pneumonia vs.\ negativo & 0,914 & 0,576 & 0,861 & 0,937 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Abla\c{c}\~oes}
+
+A Tabela~\ref{tab:abl_prep} isola o efeito do pr\'e-processamento com o melhor modelo. A
+m\'ascara pulmonar trouxe o maior ganho, possivelmente por remover bordas, textos e
+dispositivos fora do pulm\~ao, que s\~ao fonte de atalhos \cite{degrave2021shortcuts}; o CLAHE soma um ganho menor,
+e os dois juntos d\~ao a melhor AUC. A Tabela~\ref{tab:abl_imb} compara os tratamentos de
+desbalanceamento: pesos de classe e SMOTE elevam a sensibilidade da classe At\'{\i}pica de
+0,028 para cerca de 0,3 e melhoram a acur\'acia balanceada e o F1 macro, ao custo de uma
+pequena queda na AUC. Como a AUC n\~ao depende do limiar, a diferen\c{c}a mostra que o
+tratamento muda sobretudo o ponto de decis\~ao, e n\~ao a capacidade de ordenar os casos.
+
+{\let\small\scriptsize\setlength{\tabcolsep}{4pt}
+\input{tables/table_ablation_prep.tex}}
+{\let\small\footnotesize\setlength{\tabcolsep}{3pt}
+\input{tables/table_ablation_imb.tex}}
+
+\subsection{An\'alise de erro}
+
+A Tabela~\ref{tab:groups} mostra o desempenho no teste por grupo. Imagens CR tiveram
+acur\'acia e AUC bin\'aria maiores que DX, sinal de que os descritores dependem do tipo de
+equipamento. A acur\'acia maior nos casos de fallback da m\'ascara \'e um efeito de
+composi\c{c}\~ao: 97,4\% desses estudos t\^em pneumonia, e prever T\'{\i}pico acerta a maioria;
+a AUC bin\'aria, que n\~ao depende da preval\^encia, \'e menor nesse grupo (0,789 contra
+0,851). A Figura~\ref{fig:errors} traz acertos e erros de cada classe: Indeterminados e
+At\'{\i}picos s\~ao preditos como T\'{\i}picos com probabilidade alta (0,82--0,88), e a confus\~ao
+entre Negativo e T\'{\i}pico ocorre nos dois sentidos, com probabilidades perto de 0,8. Os
+acertos em Indeterminado e At\'{\i}pico, ao contr\'ario, t\^em probabilidade baixa (0,25--0,41),
+o que mostra que o modelo quase nunca tem confian\c{c}a nessas classes.
+
+\begin{table}[ht]
+\centering
+\caption{Desempenho no teste por grupo (acur\'acia em 4 classes e AUC bin\'aria pneumonia vs.\ negativo).}
+\label{tab:groups}
+\small
+\begin{tabular}{llcccc}
+\hline
+Vari\'avel & Grupo & $n$ & Acur\'acia & AUC bin\'aria & Preval\^encia de pneumonia \\
+\hline
+Modalidade & CR & 650 & 0,665 & 0,885 & 73,2\% \\
+Modalidade & DX & 624 & 0,614 & 0,835 & 71,2\% \\
+M\'ascara & v\'alida & 1.157 & 0,621 & 0,851 & 69,7\% \\
+M\'ascara & fallback & 117 & 0,821 & 0,789 & 97,4\% \\
+\hline
+Total & -- & 1.274 & 0,640 & 0,861 & 72,2\% \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig_errors.png}
+\caption{Exemplos do teste por classe verdadeira (V) e predita (P), com a probabilidade da
+classe predita; verde indica acerto e vermelho, erro.}
+\label{fig:errors}
+\end{figure}
+
+\subsection{Import\^ancia dos descritores}
+
+A Tabela~\ref{tab:imp} e a Figura~\ref{fig:importance} medem a import\^ancia por fam\'{\i}lia
+com permuta\c{c}\~ao em grupo no teste (10 repeti\c{c}\~oes) e mostram os 20 atributos de maior
+ganho no LightGBM. HOG domina: permutar suas colunas derruba a AUC em 0,195, dez vezes mais que
+qualquer outra fam\'{\i}lia, o que indica que a forma e as bordas das estruturas no recorte
+pulmonar carregam a maior parte do sinal. Entre os atributos individuais, aparecem tamb\'em LBP
+de escala grande, Gabor e momentos de intensidade, coerente com a Tabela~\ref{tab:main}, em que
+a concatena\c{c}\~ao supera qualquer fam\'{\i}lia isolada.
+
+\begin{table}[ht]
+\centering
+\caption{Queda m\'edia na AUC macro de teste ao permutar cada fam\'{\i}lia (10 repeti\c{c}\~oes).}
+\label{tab:imp}
+\small
+\begin{tabular}{lc}
+\hline
+Fam\'{\i}lia & Queda na AUC (m\'edia $\pm$ dp) \\
+\hline
+HOG & 0,195 $\pm$ 0,006 \\
+Intensidade (zonal) & 0,017 $\pm$ 0,004 \\
+LBP & 0,008 $\pm$ 0,002 \\
+GLCM/Haralick & 0,004 $\pm$ 0,001 \\
+Gabor & 0,004 $\pm$ 0,001 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_importance.png}
+\caption{Import\^ancia por permuta\c{c}\~ao de fam\'{\i}lia (teste) e os 20 atributos de maior
+ganho no LightGBM (dev).}
+\label{fig:importance}
+\end{figure}
+\clearpage
+\fi
 
 \end{document}
