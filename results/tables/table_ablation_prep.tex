@@ -1,0 +1,16 @@
+\begin{table}[ht]
+\centering
+\caption{Ablação do pré-processamento (todas as famílias, SVM-RBF).}
+\label{tab:abl_prep}
+\small
+\begin{tabular}{lccccc}
+\hline
+Configuração & AUC-ROC & AUC-PR & Acur. bal. & F1 macro & Sens. Atípico \\
+\hline
+Sem CLAHE, imagem inteira & 0.692 $\pm$ 0.014 & 0.431 $\pm$ 0.018 & 0.384 $\pm$ 0.009 & 0.337 $\pm$ 0.010 & 0.003 $\pm$ 0.007 \\
+CLAHE, imagem inteira & 0.696 $\pm$ 0.013 & 0.436 $\pm$ 0.021 & 0.389 $\pm$ 0.013 & 0.342 $\pm$ 0.014 & 0.003 $\pm$ 0.006 \\
+Sem CLAHE, máscara pulmonar & 0.702 $\pm$ 0.016 & 0.437 $\pm$ 0.013 & 0.392 $\pm$ 0.009 & 0.345 $\pm$ 0.009 & 0.000 $\pm$ 0.000 \\
+CLAHE + máscara (padrão) & 0.710 $\pm$ 0.014 & 0.444 $\pm$ 0.011 & 0.395 $\pm$ 0.008 & 0.349 $\pm$ 0.011 & 0.000 $\pm$ 0.000 \\
+\hline
+\end{tabular}
+\end{table}

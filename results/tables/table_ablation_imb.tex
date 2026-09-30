@@ -1,0 +1,15 @@
+\begin{table}[ht]
+\centering
+\caption{Tratamento do desbalanceamento (Reg. Logística, Todas).}
+\label{tab:abl_imb}
+\small
+\begin{tabular}{lccccc}
+\hline
+Configuração & AUC-ROC & AUC-PR & Acur. bal. & F1 macro & Sens. Atípico \\
+\hline
+Sem tratamento & 0.699 $\pm$ 0.019 & 0.429 $\pm$ 0.013 & 0.392 $\pm$ 0.009 & 0.361 $\pm$ 0.013 & 0.028 $\pm$ 0.019 \\
+Pesos de classe & 0.688 $\pm$ 0.019 & 0.421 $\pm$ 0.014 & 0.426 $\pm$ 0.014 & 0.408 $\pm$ 0.009 & 0.333 $\pm$ 0.058 \\
+SMOTE & 0.681 $\pm$ 0.015 & 0.417 $\pm$ 0.011 & 0.416 $\pm$ 0.011 & 0.403 $\pm$ 0.009 & 0.300 $\pm$ 0.033 \\
+\hline
+\end{tabular}
+\end{table}
