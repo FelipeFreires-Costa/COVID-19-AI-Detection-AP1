@@ -81,7 +81,7 @@ rotulagem padronizada, sem classes ligadas a fontes distintas
 \emph{VOI LUT}, invertemos imagens MONOCHROME1, normalizamos pelos percentis 0,5--99,5,
 redimensionamos para $512\times512$ e aplicamos CLAHE \cite{zuiderveld1994clahe}. A m\'ascara
 pulmonar segue o limiar de Otsu \cite{otsu1979} com regras morfol\'ogicas, como em \cite{jaeger2014tb}: abertura, os dois maiores componentes internos e fecho
-convexo; quando falha, usamos uma ROI fixa (\MaskFallback{} das imagens). Ela \'e dividida
+convexo; quando falha, usamos uma ROI fixa (\MaskFallback{} das imagens; Figura~\ref{fig:masks}). Ela \'e dividida
 em seis zonas (lado $\times$ ter\c{c}o vertical).
 
 \textbf{Descritores}, dentro da m\'ascara: (1) \emph{intensidade zonal} (momentos, percentis,
@@ -114,9 +114,16 @@ classificador. A selecionada, \BestConfig{}, teve AUC \DevAUC{} na CV e, no test
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.56\textwidth]{figures/fig_roc_cm.png}
+\begin{minipage}[b]{0.41\textwidth}\centering
+\includegraphics[width=\textwidth]{figures/fig_masks.png}
+\caption{M\'ascaras (verde) e \emph{fallback} (vermelho).}
+\label{fig:masks}
+\end{minipage}\hfill
+\begin{minipage}[b]{0.57\textwidth}\centering
+\includegraphics[width=\textwidth]{figures/fig_roc_cm.png}
 \caption{ROC por classe e matriz de confus\~ao normalizada no teste.}
 \label{fig:roccm}
+\end{minipage}
 \end{figure}
 
 \textbf{Abla\c{c}\~oes.} A AUC foi \AblRawAUC{} sem CLAHE e sem m\'ascara e \AblDefaultAUC{} no
