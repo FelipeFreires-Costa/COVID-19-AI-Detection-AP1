@@ -30,3 +30,7 @@ Para rodar localmente, instale as dependências de `requirements.txt`, defina `S
 - `paper/`: artigo em LaTeX no template SBC
 - `docs/`: fichamento, plano do grupo e tabela de contribuição
 - `tests/`: teste com dados sintéticos
+
+## Uso de IA generativa
+
+O grupo usou IA para dúvidas de código, revisão, tradução e ajuda na formulação de alguns trechos. O conteúdo e as referências foram revisados pelo grupo.
